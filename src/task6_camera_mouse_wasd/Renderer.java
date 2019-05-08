@@ -126,7 +126,6 @@ public class Renderer implements GLEventListener, MouseListener,
 		camera = camera.addZenith(Math.PI * (e.getY() - my) / width);
 		mx = e.getX();
 		my = e.getY();
-
 	}
 
 	@Override
@@ -143,6 +142,21 @@ public class Renderer implements GLEventListener, MouseListener,
 
 	@Override
 	public void keyTyped(KeyEvent e) {
+
+		switch(e.getKeyChar()) {
+			case 'w': // nahoru
+				camera = camera.up(0.1);
+				break;
+			case 'a': // doleva
+				camera = camera.left(0.1);
+				break;
+			case 's': // dolů
+				camera = camera.down(0.1);
+				break;
+			case 'd': // doprava
+				camera = camera.right(0.1);
+				break;
+		}
 	}
 
 	@Override

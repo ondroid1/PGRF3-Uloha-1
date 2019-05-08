@@ -1,13 +1,13 @@
-package task2_shape2_cartesian;
+package task6_camera_mouse_wasd;
 
 import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
+import common.GridFactory;
 import oglutils.OGLBuffers;
 import oglutils.OGLTextRenderer;
 import oglutils.OGLUtils;
 import oglutils.ShaderUtils;
-import common.GridFactory;
 import transforms.Camera;
 import transforms.Mat4;
 import transforms.Mat4PerspRH;
@@ -40,6 +40,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
 	private Mat4 proj;
 	private Camera camera;
+	private int mx, my;
 
 	@Override
 	public void init(GLAutoDrawable glDrawable) {
@@ -49,8 +50,8 @@ public class Renderer implements GLEventListener, MouseListener,
 		
 		textRenderer = new OGLTextRenderer(gl, glDrawable.getSurfaceWidth(), glDrawable.getSurfaceHeight());
 		
-		shaderProgram = ShaderUtils.loadProgram(gl, "/task2_shape2_cartesian/start.vert",
-				"/task2_shape2_cartesian/start.frag",
+		shaderProgram = ShaderUtils.loadProgram(gl, "/task6_camera_mouse_wasd/start.vert",
+				"/task6_camera_mouse_wasd/start.frag",
 				null,null,null,null); 
 
 		buffers = GridFactory.generateGrid(gl, 100, 100);
@@ -121,6 +122,11 @@ public class Renderer implements GLEventListener, MouseListener,
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
+		camera = camera.addAzimuth(Math.PI * (mx - e.getX()) / width);
+		camera = camera.addZenith(Math.PI * (e.getY() - my) / width);
+		mx = e.getX();
+		my = e.getY();
+
 	}
 
 	@Override

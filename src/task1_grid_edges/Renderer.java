@@ -3,6 +3,7 @@ package task1_grid_edges;
 import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
+import common.GridFactory;
 import oglutils.*;
 import transforms.*;
 

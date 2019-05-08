@@ -1,4 +1,4 @@
-package task1_grid_edges;
+package common;
 
 import com.jogamp.opengl.GL2GL3;
 import oglutils.OGLBuffers;

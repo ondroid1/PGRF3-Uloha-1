@@ -7,7 +7,7 @@ import oglutils.OGLBuffers;
 import oglutils.OGLTextRenderer;
 import oglutils.OGLUtils;
 import oglutils.ShaderUtils;
-import task1_grid_edges.GridFactory;
+import common.GridFactory;
 import transforms.Camera;
 import transforms.Mat4;
 import transforms.Mat4PerspRH;

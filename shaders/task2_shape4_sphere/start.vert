@@ -7,12 +7,12 @@ uniform mat4 view;
 
 const float PI = 3.14;
 
-// vrací souřadnice pro objekt SpaceStation ze sférických souřadnic
+// vrací souřadnice pro modifikovaný objekt SpaceStation ze sférických souřadnic
 // http://www.math.uri.edu/~bkaskosz/flashmo/tools/sphplot/
-vec3 getSpaceStation(vec2 paramPos) {
+vec3 getSpaceStation2(vec2 paramPos) {
 	float s = 2 * PI * paramPos.x;
-	float t = PI * paramPos.y ;
-	float rho = 1 + 0.5 * sin(4 * t);
+	float t = PI * paramPos.y  + 3;
+	float rho = 1 + sin(2 * t);
 
 	float x = cos(s) * sin(t) * rho;
 	float y = sin(s) * sin(t) * rho;
@@ -25,7 +25,7 @@ void main() {
 	vec2 pos = inPosition * 2 - 1;
 	vec3 finalPos;
 
-	finalPos = getSpaceStation(pos);
+	finalPos = getSpaceStation2(pos);
 	vertColor = finalPos;
 
 	gl_Position = proj * view * vec4(finalPos, 1.0);

@@ -1,6 +1,7 @@
 #version 150
-out vec4 outColor; // output from the fragment shader
+in vec3 vertColor; // vstup z proběhlé části pipeline (vertex shaderu)
+out vec4 outColor; // výstup z  fragment shaderu
 
 void main() {
-	outColor = vec4(1, 0, 1, 1.0);
+	outColor = vec4(vertColor, 1.0);
 } 

@@ -23,6 +23,5 @@ void main() {
 	vec3 finalPos;
 
 	finalPos = getSphere(pos);
-
 	gl_Position = proj * view * vec4(finalPos, 1.0);
 }

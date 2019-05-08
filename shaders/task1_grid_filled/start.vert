@@ -1,5 +1,6 @@
 #version 150
 in vec2 inPosition; // input from the vertex buffer
+out vec3 vertColor; // výstupní barva
 
 uniform mat4 proj;
 uniform mat4 view;
@@ -23,6 +24,8 @@ void main() {
 	vec3 finalPos;
 
 	finalPos = getSphere(pos);
+
+	vertColor = finalPos;
 
 	gl_Position = proj * view * vec4(finalPos, 1.0);
 }

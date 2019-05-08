@@ -1,4 +1,4 @@
-package task1_grid_filled;
+package task2_shape2_cartesian;
 
 import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -49,8 +49,8 @@ public class Renderer implements GLEventListener, MouseListener,
 		
 		textRenderer = new OGLTextRenderer(gl, glDrawable.getSurfaceWidth(), glDrawable.getSurfaceHeight());
 		
-		shaderProgram = ShaderUtils.loadProgram(gl, "/task1_grid_filled/start.vert",
-				"/task1_grid_filled/start.frag",
+		shaderProgram = ShaderUtils.loadProgram(gl, "/task2_shape1_cartesian/start.vert",
+				"/task2_shape1_cartesian/start.frag",
 				null,null,null,null); 
 
 		buffers = GridFactory.generateGrid(gl, 100, 100);

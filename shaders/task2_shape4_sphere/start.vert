@@ -18,7 +18,7 @@ vec3 getSpaceStation2(vec2 paramPos) {
 	float y = sin(s) * sin(t) * rho;
 	float z = cos(t) * rho;
 
-	return vec3(x,	y,	z);
+	return vec3(x,	y,	z) * 2;
 }
 
 void main() {

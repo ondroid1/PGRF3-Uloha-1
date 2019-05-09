@@ -20,7 +20,7 @@ vec3 getJuicer(vec2 paramPos) {
 	float y = r * sin(theta);
 	float z = cos(t); //(3 - t) * 0.2;
 
-	return vec3(x,	y,	z) / 4; // zmenšeno kvůli defaultnímu nastavení kamery
+	return vec3(x,	y,	z);
 }
 
 void main() {

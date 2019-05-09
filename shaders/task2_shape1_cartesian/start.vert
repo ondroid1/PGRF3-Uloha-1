@@ -10,13 +10,13 @@ const float PI = 3.14;
 // ohnutí gridu do kónického tvaru
 vec3 getConus(vec2 xy) {
 	float az = xy.x * PI;
-	float ze = xy.y * 2 * PI; // máme od -1 do 1 a chceme od 0 do 2PI
+	float ze = xy.y * 2 * PI;
 
 	float x = ze * cos(az);
 	float y = ze * sin(az);
 	float z = ze;
 
-	return vec3(x, y, z);
+	return vec3(x, y, z) / 2;
 }
 
 void main() {

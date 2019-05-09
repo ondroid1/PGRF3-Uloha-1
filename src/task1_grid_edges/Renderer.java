@@ -1,13 +1,13 @@
-package task2_shape2_cartesian;
+package task1_grid_edges;
 
 import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
+import common.GridFactory;
 import oglutils.OGLBuffers;
 import oglutils.OGLTextRenderer;
 import oglutils.OGLUtils;
 import oglutils.ShaderUtils;
-import common.GridFactory;
 import transforms.Camera;
 import transforms.Mat4;
 import transforms.Mat4PerspRH;
@@ -23,13 +23,15 @@ import java.awt.event.*;
  * Manage (create, bind, draw) vertex and index buffers using OGLBuffers class
  * in oglutils package<br/>
  * Requires JOGL 2.3.0 or newer
- * 
+ *
  * @author PGRF FIM UHK
  * @version 2.0
  * @since 2015-09-05
  */
 public class Renderer implements GLEventListener, MouseListener,
 		MouseMotionListener, KeyListener {
+
+	private String vertexShaderFileName, fragmentShaderFileName;
 
 	int width, height;
 
@@ -41,22 +43,26 @@ public class Renderer implements GLEventListener, MouseListener,
 	private Mat4 proj;
 	private Camera camera;
 
+	public Renderer(String vertexShaderFileName, String fragmentShaderFileName) {
+		this.vertexShaderFileName = vertexShaderFileName;
+		this.fragmentShaderFileName = fragmentShaderFileName;
+	}
+
 	@Override
 	public void init(GLAutoDrawable glDrawable) {
 		GL2GL3 gl = glDrawable.getGL().getGL2GL3();
 		OGLUtils.shaderCheck(gl);
 		OGLUtils.printOGLparameters(gl);
-		
-		textRenderer = new OGLTextRenderer(gl, glDrawable.getSurfaceWidth(), glDrawable.getSurfaceHeight());
-		
-		shaderProgram = ShaderUtils.loadProgram(gl, "/task2_shape2_cartesian/start.vert",
-				"/task2_shape2_cartesian/start.frag",
-				null,null,null,null); 
 
-		buffers = GridFactory.generateGrid(gl, 100, 100);
+		textRenderer = new OGLTextRenderer(gl, glDrawable.getSurfaceWidth(), glDrawable.getSurfaceHeight());
+
+		shaderProgram = ShaderUtils.loadProgram(gl, vertexShaderFileName, fragmentShaderFileName,
+				null,null,null,null);
+
+		buffers = GridFactory.generateGrid(gl, 20, 20);
 
 		camera = new Camera()
-				.withPosition(new Vec3D(0,0, 0))
+				.withPosition(new Vec3D(5,5, 5))
 				.addAzimuth(5 / 4. * Math.PI)
 				.addZenith(-1 / 5. * Math.PI)
 				.withFirstPerson(false)
@@ -69,29 +75,30 @@ public class Renderer implements GLEventListener, MouseListener,
 	@Override
 	public void display(GLAutoDrawable glDrawable) {
 		GL2GL3 gl = glDrawable.getGL().getGL2GL3();
-		
+
 		gl.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		gl.glClear(GL2GL3.GL_COLOR_BUFFER_BIT | GL2GL3.GL_DEPTH_BUFFER_BIT);
-		
+
 		// set the current shader to be used, could have been done only once (in
 		// init) in this sample (only one shader used)
-		gl.glUseProgram(shaderProgram); 
+		gl.glUseProgram(shaderProgram);
 
 		gl.glUniformMatrix4fv(locView, 1, false, camera.getViewMatrix().floatArray(), 0);
 		gl.glUniformMatrix4fv(locProj, 1, false, proj.floatArray(), 0);
-		
+
+		gl.glPolygonMode(GL2GL3.GL_FRONT_AND_BACK, GL2GL3.GL_LINE);
+
 		// bind and draw
-		buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgram);
-		
+		buffers.draw(GL2GL3.GL_TRIANGLE_STRIP, shaderProgram);
+
 		String text = this.getClass().getName();
 		textRenderer.drawStr2D(3, height - 20, text);
 		textRenderer.drawStr2D(width - 90, 3, " (c) PGRF UHK");
-
 	}
 
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
-			int height) {
+						int height) {
 		this.width = width;
 		this.height = height;
 		proj = new Mat4PerspRH(Math.PI / 4, height / (double) width, 0.01, 1000.0);

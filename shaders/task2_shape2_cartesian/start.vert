@@ -9,13 +9,14 @@ const float PI = 3.14;
 
 // ohnutí gridu do jiného tvaru
 vec3 getConus(vec2 xy) {
-	float ze = xy.y * PI / 2;
+	float az = xy.x * PI;
+	float ze = xy.y * 2 * PI;
 
-	float x = xy.x * 2;
-	float y = xy.y;
+	float x = az * sin(ze);
+	float y = ze * sin(az);
 	float z = ze;
 
-	return vec3(x, y, z);
+	return vec3(x, y, z) / 2;
 }
 
 void main() {
@@ -23,7 +24,7 @@ void main() {
 	vec3 finalPos;
 
 	finalPos = getConus(pos);
-	vertColor = finalPos / 4;
+	vertColor = finalPos;
 
 	gl_Position = proj * view * vec4(finalPos, 1.0);
 }

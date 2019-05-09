@@ -11,7 +11,7 @@ const float PI = 3.14;
 vec3 getSphere(vec2 xy) {
 	float az = xy.x * PI;
 	float ze = xy.y * PI/2; // máme od -1 do 1 a chceme od -PI/2 do PI/2
-	float r = 1;
+	float r = 2;
 
 	float x = cos(az)*cos(ze)*r;
 	float y = 2*sin(az)*cos(ze)*r;

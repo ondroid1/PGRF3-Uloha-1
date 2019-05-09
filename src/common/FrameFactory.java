@@ -14,7 +14,7 @@ public class FrameFactory {
     private static final int FPS = 60; // animator's target frames per second
 
     public static Frame GetApplicationFrame(BasicRenderer ren) {
-        Frame testFrame = new Frame("TestFrame");
+        Frame testFrame = new Frame("PGRF3");
         testFrame.setSize(512, 384);
 
         // setup OpenGL version

@@ -3,6 +3,7 @@ package task5_light;
 import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
+import common.GridFactory;
 import oglutils.*;
 import transforms.*;
 
@@ -53,8 +54,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glPolygonMode(GL2GL3.GL_FRONT_AND_BACK, GL2GL3.GL_FILL);// vyplnění přivrácených i odvrácených stran
         gl.glEnable(GL2GL3.GL_DEPTH_TEST); // zapnout z-test
 
-        shaderProgramLight = ShaderUtils.loadProgram(gl, "/uloha1osvetleni/light");
-        shaderProgramViewer = ShaderUtils.loadProgram(gl, "/uloha1osvetleni/start");
+        shaderProgramLight = ShaderUtils.loadProgram(gl, "/task5_light/light");
+        shaderProgramViewer = ShaderUtils.loadProgram(gl, "/task5_light/start");
 
         //createBuffers(gl);
         buffers = GridFactory.generateGrid(gl, 100, 100);

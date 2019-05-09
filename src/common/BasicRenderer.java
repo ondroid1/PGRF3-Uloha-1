@@ -61,7 +61,7 @@ public class BasicRenderer implements GLEventListener, MouseListener,
 		buffers = GridFactory.generateGrid(gl, 100, 100);
 
 		camera = new Camera()
-				.withPosition(new Vec3D(0,0, 0))
+				.withPosition(new Vec3D(10,10, 10))
 				.addAzimuth(5 / 4. * Math.PI)
 				.addZenith(-1 / 5. * Math.PI)
 				.withFirstPerson(false)

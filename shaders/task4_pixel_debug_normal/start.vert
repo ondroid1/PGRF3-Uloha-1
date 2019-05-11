@@ -1,6 +1,6 @@
 #version 150
 in vec2 inPosition; // input from the vertex buffer
-out vec3 vertColor; // výstupní barva
+out vec3 normal;
 
 uniform mat4 proj;
 uniform mat4 view;
@@ -19,12 +19,18 @@ vec3 getConus(vec2 xy) {
 	return vec3(x, y, z) / 2;
 }
 
+vec3 getNormal(vec2 xy) {
+	vec3 u = getConus(xy + vec2(0.001, 0)) - getConus(xy - vec2(0.001, 0));
+	vec3 v = getConus(xy + vec2(0, 0.001)) - getConus(xy - vec2(0, 0.001));
+	return cross(u, v);
+}
+
 void main() {
 	vec2 pos = inPosition * 2 - 1;
 	vec3 finalPos;
 
 	finalPos = getConus(pos);
-	vertColor = finalPos;
+	normal = getNormal(pos);
 
 	gl_Position = proj * view * vec4(finalPos, 1.0);
 }

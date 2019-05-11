@@ -10,8 +10,8 @@ public class JOGLApp {
 
 	private void start() {
 		try {
-			BasicRenderer renderer = new BasicRenderer("/task4_pixel_debug_xyz/start.vert",
-					"/task4_pixel_debug_xyz/start.frag");
+			BasicRenderer renderer = new BasicRenderer("/task4_pixel_debug_normal/start.vert",
+					"/task4_pixel_debug_normal/start.frag");
 			FrameFactory.GetApplicationFrame(renderer);
 		} catch (Exception e) {
 			e.printStackTrace();

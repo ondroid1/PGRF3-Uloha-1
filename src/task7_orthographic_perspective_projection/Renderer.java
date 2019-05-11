@@ -56,7 +56,7 @@ public class Renderer implements GLEventListener, MouseListener,
         buffers = GridFactory.generateGrid(gl, 100, 100);
 
         camera = new Camera()
-                .withPosition(new Vec3D(0,0, 0))
+                .withPosition(new Vec3D(5,5, 5 ))
                 .addAzimuth(5 / 4. * Math.PI)
                 .addZenith(-1 / 5. * Math.PI)
                 .withFirstPerson(false)
@@ -98,11 +98,7 @@ public class Renderer implements GLEventListener, MouseListener,
         this.width = width;
         this.height = height;
 
-        if (projectionType == ProjectionType.PERSPECTIVE) {
-            proj = new Mat4PerspRH(Math.PI / 4, height / (double) width, 0.01, 1000.0);
-        } else {
-            proj = new Mat4OrthoRH(Math.PI / 4, height / (double) width, 0.01, 1000.0);
-        }
+        redraw();
 
         textRenderer.updateSize(width, height);
     }
@@ -142,6 +138,8 @@ public class Renderer implements GLEventListener, MouseListener,
         } else {
             projectionType = ProjectionType.PERSPECTIVE;
         }
+
+        redraw();
     }
 
     @Override
@@ -158,8 +156,13 @@ public class Renderer implements GLEventListener, MouseListener,
         gl.glDeleteProgram(shaderProgram);
     }
 
+    private void redraw() {
+        if (projectionType == ProjectionType.PERSPECTIVE) {
+            proj = new Mat4OrthoRH(Math.PI * 4, height / (double) width * 12, 2, 12);
+        } else {
+            proj = new Mat4PerspRH(Math.PI / 3, height / (double) width, 1, 20.0);
+        }
+    }
+
 }
 
-enum ProjectionType {
-    ORTHOGRAPHIC, PERSPECTIVE
-}

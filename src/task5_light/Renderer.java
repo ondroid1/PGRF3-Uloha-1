@@ -30,8 +30,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     private OGLBuffers buffers;
     private OGLTextRenderer textRenderer;
     private OGLRenderTarget renderTarget;
-    private OGLTexture2D.Viewer textureViewer;
-    private OGLTexture2D texture;
+//    private OGLTexture2D.Viewer textureViewer;
+//    private OGLTexture2D texture;
 
     private int shaderProgramViewer, locTime, locView, locProjection, locMode, locLightVP, locEyePosition, locLightPosition;
     private int shaderProgramLight, locLightView, locLightProj, locModeLight;
@@ -84,8 +84,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         locLightView = gl.glGetUniformLocation(shaderProgramLight, "viewLight");
         locModeLight = gl.glGetUniformLocation(shaderProgramLight, "mode");
 
-        texture = new OGLTexture2D(gl, "/textures/mosaic.jpg");
-        textureViewer = new OGLTexture2D.Viewer(gl);
+//        texture = new OGLTexture2D(gl, "/textures/mosaic.jpg");
+//        textureViewer = new OGLTexture2D.Viewer(gl);
 
         renderTarget = new OGLRenderTarget(gl, 1024, 1024);
     }
@@ -113,9 +113,9 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         renderFromLight(gl);
         renderFromViewer(gl);
 
-        textureViewer.view(texture, -1, -1, 0.5);
-        textureViewer.view(renderTarget.getColorTexture(), -1, -0.5, 0.5);
-        textureViewer.view(renderTarget.getDepthTexture(), -1, 0, 0.5);
+//        textureViewer.view(texture, -1, -1, 0.5);
+//        textureViewer.view(renderTarget.getColorTexture(), -1, -0.5, 0.5);
+//        textureViewer.view(renderTarget.getDepthTexture(), -1, 0, 0.5);
 
         String text = this.getClass().getName();
         textRenderer.drawStr2D(3, height - 20, text);
@@ -160,7 +160,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glUniform3fv(locEyePosition, 1, ToFloatArray.convert(camera.getPosition()), 0);
         gl.glUniform3fv(locLightPosition, 1, ToFloatArray.convert(lightCamera.getPosition()), 0);
 
-        texture.bind(shaderProgramViewer, "textureID", 0);
+        //texture.bind(shaderProgramViewer, "textureID", 0);
         //renderTarget.getColorTexture().bind(shaderProgram, "colorTexture", 0);
         renderTarget.getDepthTexture().bind(shaderProgramViewer, "depthTexture", 1);
 

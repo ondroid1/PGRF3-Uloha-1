@@ -91,8 +91,7 @@ public class Renderer implements GLEventListener, MouseListener,
 		// bind and draw
 		buffers.draw(GL2GL3.GL_TRIANGLE_STRIP, shaderProgram);
 
-		String text = this.getClass().getName();
-		textRenderer.drawStr2D(3, height - 20, text);
+		textRenderer.drawStr2D(3, height - 20, this.getClass().getName());
 		textRenderer.drawStr2D(width - 90, 3, " (c) PGRF UHK");
 	}
 

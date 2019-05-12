@@ -1,11 +1,12 @@
-package task5_light;
+package task8_vertex_vs_pixel_lighting;
+
+
 
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -13,14 +14,13 @@ import java.awt.event.WindowEvent;
 public class JOGLApp {
 	private static final int FPS = 60; // animator's target frames per second
 
-	public void start() {
+	public static void main(String[] args) {
 		try {
-
 			Frame testFrame = new Frame("TestFrame");
 			testFrame.setSize(512, 384);
 
-			// setup OpenGL version
-	    	GLProfile profile = GLProfile.getMaximum(true);
+			// setup OpenGL Version 2
+	    	GLProfile profile = GLProfile.get(GLProfile.GL2);
 	    	GLCapabilities capabilities = new GLCapabilities(profile);
 	    	
 	    	// The canvas is the widget that's drawn in the JFrame
@@ -31,10 +31,11 @@ public class JOGLApp {
 			canvas.addMouseMotionListener(ren);
 			canvas.addKeyListener(ren);
 	    	canvas.setSize( 512, 384 );
-
+	    	
+	    	
 	    	testFrame.add(canvas);
 			
-	        //shutdown the program on windows close event
+	        // shutdown the program on windows close event
 	        			
 	    	//final Animator animator = new Animator(canvas);
 	    	final FPSAnimator animator = new FPSAnimator(canvas, FPS, true);
@@ -51,17 +52,15 @@ public class JOGLApp {
 	                  }.start();
 				}
 			});
-	    	testFrame.setTitle(ren.getClass().getName());
+	    	//testFrame.setTitle("");
 	    	testFrame.pack();
 	    	testFrame.setVisible(true);
             animator.start(); // start the animation loop
+            
+            
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> new JOGLApp().start());
 	}
 
 }

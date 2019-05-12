@@ -14,19 +14,6 @@ import transforms.Vec3D;
 
 import java.awt.event.*;
 
-/**
- * GLSL sample:<br/>
- * Read and compile shader from files "/shader/glsl01/start.*" using ShaderUtils
- * class in oglutils package (older GLSL syntax can be seen in
- * "/shader/glsl01/startForOlderGLSL")<br/>
- * Manage (create, bind, draw) vertex and index buffers using OGLBuffers class
- * in oglutils package<br/>
- * Requires JOGL 2.3.0 or newer
- * 
- * @author PGRF FIM UHK
- * @version 2.0
- * @since 2015-09-05
- */
 public class BasicRenderer implements GLEventListener, MouseListener,
 		MouseMotionListener, KeyListener {
 

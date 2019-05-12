@@ -30,20 +30,16 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     private OGLBuffers buffers;
     private OGLTextRenderer textRenderer;
     private OGLRenderTarget renderTarget;
-//    private OGLTexture2D.Viewer textureViewer;
-//    private OGLTexture2D texture;
 
-    private int shaderProgramViewer, locTime, locView, locProjection, locMode, locLightVP, locEyePosition, locLightPosition;
-    private int shaderProgramLight, locLightView, locLightProj, locModeLight;
+    private int shaderProgramViewer, shaderProgramLight, shaderProgramLightSource, locView, locProjection, locMode, locLightVP, locEyePosition, locLightPosition,
+        locLightView, locLightProj, locModeLight;
 
     private Mat4 projViewer, projLight;
-    private float time = 0;
     private Camera camera, lightCamera;
     private int mx, my;
 
     @Override
     public void init(GLAutoDrawable glDrawable) {
-        // check whether shaders are supported
         GL2GL3 gl = glDrawable.getGL().getGL2GL3();
         OGLUtils.shaderCheck(gl);
 
@@ -56,8 +52,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
         shaderProgramLight = ShaderUtils.loadProgram(gl, "/task5_light/light");
         shaderProgramViewer = ShaderUtils.loadProgram(gl, "/task5_light/start");
+        shaderProgramLightSource = ShaderUtils.loadProgram(gl, "/task5_light/light_position");
 
-        //createBuffers(gl);
         buffers = GridFactory.generateGrid(gl, 100, 100);
 
         lightCamera = new Camera()
@@ -72,7 +68,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
                 .withFirstPerson(false)
                 .withRadius(5);
 
-        locTime = gl.glGetUniformLocation(shaderProgramViewer, "time");
         locMode = gl.glGetUniformLocation(shaderProgramViewer, "mode");
         locView = gl.glGetUniformLocation(shaderProgramViewer, "view");
         locProjection = gl.glGetUniformLocation(shaderProgramViewer, "projection");
@@ -84,41 +79,18 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         locLightView = gl.glGetUniformLocation(shaderProgramLight, "viewLight");
         locModeLight = gl.glGetUniformLocation(shaderProgramLight, "mode");
 
-//        texture = new OGLTexture2D(gl, "/textures/mosaic.jpg");
-//        textureViewer = new OGLTexture2D.Viewer(gl);
-
         renderTarget = new OGLRenderTarget(gl, 1024, 1024);
-    }
-
-    void createBuffers(GL2GL3 gl) {
-        float[] vertexBufferData = {
-                -1, -1, 0.7f, 0, 0,
-                1, 0, 0, 0.7f, 0,
-                0, 1, 0, 0, 0.7f
-        };
-        int[] indexBufferData = {0, 1, 2};
-
-        // vertex binding description, concise version
-        OGLBuffers.Attrib[] attributes = {
-                new OGLBuffers.Attrib("inPosition", 2), // 2 floats
-                new OGLBuffers.Attrib("inColor", 3) // 3 floats
-        };
-        buffers = new OGLBuffers(gl, vertexBufferData, attributes, indexBufferData);
     }
 
     @Override
     public void display(GLAutoDrawable glDrawable) {
         GL2GL3 gl = glDrawable.getGL().getGL2GL3();
 
-        renderFromLight(gl);
-        renderFromViewer(gl);
+        //renderFromLight(gl);
+        // renderFromViewer(gl);
+        renderFromLightSource(gl);
 
-//        textureViewer.view(texture, -1, -1, 0.5);
-//        textureViewer.view(renderTarget.getColorTexture(), -1, -0.5, 0.5);
-//        textureViewer.view(renderTarget.getDepthTexture(), -1, 0, 0.5);
-
-        String text = this.getClass().getName();
-        textRenderer.drawStr2D(3, height - 20, text);
+        textRenderer.drawStr2D(3, height - 20, this.getClass().getName());
         textRenderer.drawStr2D(width - 90, 3, " (c) PGRF UHK");
     }
 
@@ -151,17 +123,12 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glClearColor(0.0f, 0.3f, 0.0f, 1.0f);
         gl.glClear(GL2GL3.GL_COLOR_BUFFER_BIT | GL2GL3.GL_DEPTH_BUFFER_BIT);
 
-        time += 0.1;
-        gl.glUniform1f(locTime, time);
-
         gl.glUniformMatrix4fv(locView, 1, false, camera.getViewMatrix().floatArray(), 0);
         gl.glUniformMatrix4fv(locProjection, 1, false, projViewer.floatArray(), 0);
         gl.glUniformMatrix4fv(locLightVP, 1, false, lightCamera.getViewMatrix().mul(projLight).floatArray(), 0);
         gl.glUniform3fv(locEyePosition, 1, ToFloatArray.convert(camera.getPosition()), 0);
         gl.glUniform3fv(locLightPosition, 1, ToFloatArray.convert(lightCamera.getPosition()), 0);
 
-        //texture.bind(shaderProgramViewer, "textureID", 0);
-        //renderTarget.getColorTexture().bind(shaderProgram, "colorTexture", 0);
         renderTarget.getDepthTexture().bind(shaderProgramViewer, "depthTexture", 1);
 
         // renderuj stěnu
@@ -171,6 +138,30 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         // renderuj elipsoid
         gl.glUniform1i(locMode, 1);
         buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
+
+        // renderuj zdroj svetla
+        gl.glUniform1i(locMode, 2);
+        buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
+    }
+
+    private void renderFromLightSource(GL2GL3 gl) {
+
+        gl.glUseProgram(shaderProgramLightSource);
+
+        gl.glClearColor(0.0f, 0.3f, 0.0f, 1.0f);
+        gl.glClear(GL2GL3.GL_COLOR_BUFFER_BIT | GL2GL3.GL_DEPTH_BUFFER_BIT);
+
+//        gl.glUniformMatrix4fv(locView, 1, false, camera.getViewMatrix().floatArray(), 0);
+        gl.glUniformMatrix4fv(locView, 1, false, projViewer.floatArray(), 0);
+        // renderuj zdroj svetla
+        gl.glUniform1i(locMode, 2);
+
+        // renderuj zdroj svetla
+        buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramLightSource);
+
+
+        buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
+
     }
 
     @Override
@@ -181,7 +172,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
         double ratio = height / (double) width;
         projLight = new Mat4OrthoRH(5 / ratio, 5, 0.1, 20);
-//        projViewer = new Mat4OrthoRH(5 / ratio, 5, 0.1, 20);
         projViewer = new Mat4PerspRH(Math.PI / 3, ratio, 1, 20.0);
     }
 
@@ -190,6 +180,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         GL2GL3 gl = glDrawable.getGL().getGL2GL3();
         gl.glDeleteProgram(shaderProgramViewer);
         gl.glDeleteProgram(shaderProgramLight);
+        gl.glDeleteProgram(shaderProgramLightSource);
     }
 
     @Override

@@ -44,12 +44,12 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
         lightCamera = new Camera()
                 .withPosition(new Vec3D(5, 5, 5))
-                .addAzimuth(5 / 4. * Math.PI -3/4)
-                .addZenith(-1 / 5. * Math.PI);
+                .addAzimuth(5 / 4. * Math.PI)
+                .addZenith(1 / 5. * Math.PI);
 
         camera = new Camera()
-                .withPosition(new Vec3D(5, 5, 5))
-                .addAzimuth(5 / 4. * Math.PI)//-3/4.
+                .withPosition(new Vec3D(3, 3, 3))
+                .addAzimuth(5 / 4. * Math.PI)
                 .addZenith(-1 / 5. * Math.PI)
                 .withFirstPerson(false)
                 .withRadius(5);
@@ -118,8 +118,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
 
         // renderuj zdroj svetla
-//        gl.glUniform1i(locMode, 2);
-//        buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
+        gl.glUniform1i(locMode, 1);
+        buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
     }
 
     private void renderFromLightSource(GL2GL3 gl) {
@@ -132,7 +132,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 //        gl.glUniformMatrix4fv(locView, 1, false, camera.getViewMatrix().floatArray(), 0);
         gl.glUniformMatrix4fv(locView, 1, false, projViewer.floatArray(), 0);
 
-        gl.glUniform1i(locMode, 2);
+        gl.glUniform1i(locMode, 1);
 
         // renderuj zdroj svetla
         buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramLightSource);
@@ -147,7 +147,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         textRenderer.updateSize(width, height);
 
         double ratio = height / (double) width;
-        projLight = new Mat4OrthoRH(5 / ratio, 5, 0.1, 20);
+        projLight = new Mat4OrthoRH(5 / ratio, 10, 100, 100);
         projViewer = new Mat4PerspRH(Math.PI / 3, ratio, 1, 20.0);
     }
 

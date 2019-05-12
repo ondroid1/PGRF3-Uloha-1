@@ -61,7 +61,7 @@ public class JOGLApp {
 		new Demo ("Bod 4 - Pixelové zobrazení povrchu - XYZ", "task4_pixel_debug_xyz", RendererType.BASIC, "/task4_pixel_debug_xyz/start.vert",
 				"/task4_pixel_debug_xyz/start.frag"),
 		new Demo ("Bod 4 - Pixelové zobrazení povrchu - normála", "task4_pixel_debug_normal", RendererType.BASIC, "/task4_pixel_debug_normal/start.vert",
-				"/task4_pixel_debug_xyz/start.frag"),
+				"/task4_pixel_debug_normal/start.frag"),
 		new Demo ("Bod 4 - Pixelové zobrazení povrchu - textura", "task4_pixel_debug_texture", RendererType.OWN, null, null),
 		// 5. bod
 		new Demo ("Bod 5 - Osvětlení", "task5_light", RendererType.OWN, null, null),
@@ -109,7 +109,7 @@ public class JOGLApp {
 
 		Menu menu1 = new Menu("Ukázka");
 		MenuItem m;
-		for (int i = 0; i <= demoNames.length; i++) {
+		for (int i = 0; i < demoNames.length; i++) {
 			m = new MenuItem(new Integer(menuIndex + 1).toString() + " - "
 					+ demoNames[menuIndex]);
 			m.addActionListener(actionListener);

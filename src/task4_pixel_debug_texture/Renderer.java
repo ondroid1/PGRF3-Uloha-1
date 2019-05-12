@@ -23,6 +23,9 @@ import transforms.Mat4;
 import transforms.Mat4PerspRH;
 import transforms.Vec3D;
 
+/**
+ * Zpracováno podle glsl-samples
+ */
 public class Renderer implements GLEventListener, MouseListener,
 		MouseMotionListener, KeyListener {
 
@@ -69,11 +72,7 @@ public class Renderer implements GLEventListener, MouseListener,
 	}
 
 	void createBuffers(GL2GL3 gl) {
-		// vertices are not shared among triangles (and thus faces) so each face
-		// can have a correct normal in all vertices
-		// also because of this, the vertices can be directly drawn as GL_TRIANGLES
-		// (three and three vertices form one face)
-		// triangles defined in index buffer
+
 		float[] cube = {
 				// bottom (z-) face
 				1, 0, 0,	0, 0, -1, 	1, 0,
@@ -106,19 +105,6 @@ public class Renderer implements GLEventListener, MouseListener,
 				1, 0, 1,	0, -1, 0,	1, 1,
 				0, 0, 1,	0, -1, 0,	0, 1
 		};
-
-//		float[] pyramid = {  // Vertices for the front face
-//				-1.0f,  0.0f, 0.86f,
-//				1.0f,  0.0f, 0.86f,
-//				0.0f,  1.86f, 0.0f,
-//		};
-//
-//		int[] indexBufferData = new int[12];
-//		for (int i = 0; i<3; i++){
-//			indexBufferData[i*3] = i*3;
-//			indexBufferData[i*3 + 1] = i*3 + 1;
-//			indexBufferData[i*3 + 2] = i*3 + 2;
-//		}
 
 		int[] indexBufferData = new int[36];
 		for (int i = 0; i<6; i++){
@@ -157,7 +143,7 @@ public class Renderer implements GLEventListener, MouseListener,
 
 		textureViewer.view(texture, -1, -1, 0.5);
 
-		String text = new String(this.getClass().getName());
+		String text = this.getClass().getName() + "Zpracováno podle glsl-samples";
 
 		textRenderer.drawStr2D(3, height-20, text);
 		textRenderer.drawStr2D(width-90, 3, " (c) PGRF UHK");

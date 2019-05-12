@@ -9,20 +9,6 @@ import transforms.*;
 
 import java.awt.event.*;
 
-/**
- * GLSL sample:<br/>
- * Read and compile shader from files "/shader/glsl01/start.*" using ShaderUtils
- * class in oglutils package (older GLSL syntax can be seen in
- * "/shader/glsl01/startForOlderGLSL")<br/>
- * Manage (create, bind, draw) vertex and index buffers using OGLBuffers class
- * in oglutils package<br/>
- * Requires JOGL 2.3.0 or newer
- *
- * @author PGRF FIM UHK
- * @version 2.0
- * @since 2015-09-05
- */
-
 public class Renderer implements GLEventListener, MouseListener, MouseMotionListener, KeyListener {
 
     private int width, height;
@@ -52,7 +38,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
         shaderProgramLight = ShaderUtils.loadProgram(gl, "/task5_light/light");
         shaderProgramViewer = ShaderUtils.loadProgram(gl, "/task5_light/start");
-        shaderProgramLightSource = ShaderUtils.loadProgram(gl, "/task5_light/light_position");
+        //shaderProgramLightSource = ShaderUtils.loadProgram(gl, "/task5_light/light_position");
 
         buffers = GridFactory.generateGrid(gl, 100, 100);
 
@@ -86,9 +72,9 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     public void display(GLAutoDrawable glDrawable) {
         GL2GL3 gl = glDrawable.getGL().getGL2GL3();
 
-        //renderFromLight(gl);
-        // renderFromViewer(gl);
-        renderFromLightSource(gl);
+        renderFromLight(gl);
+        renderFromViewer(gl);
+        //renderFromLightSource(gl);
 
         textRenderer.drawStr2D(3, height - 20, this.getClass().getName());
         textRenderer.drawStr2D(width - 90, 3, " (c) PGRF UHK");
@@ -105,10 +91,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glUniformMatrix4fv(locLightView, 1, false, lightCamera.getViewMatrix().floatArray(), 0);
         gl.glUniformMatrix4fv(locLightProj, 1, false, projLight.floatArray(), 0);
 
-        // renderuj stěnu
-        gl.glUniform1i(locModeLight, 0);
-        buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramLight);
-
         // renderuj elipsoid
         gl.glUniform1i(locModeLight, 1);
         buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramLight);
@@ -120,7 +102,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glBindFramebuffer(GL2GL3.GL_FRAMEBUFFER, 0);
         gl.glViewport(0, 0, width, height);
 
-        gl.glClearColor(0.0f, 0.3f, 0.0f, 1.0f);
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         gl.glClear(GL2GL3.GL_COLOR_BUFFER_BIT | GL2GL3.GL_DEPTH_BUFFER_BIT);
 
         gl.glUniformMatrix4fv(locView, 1, false, camera.getViewMatrix().floatArray(), 0);
@@ -131,17 +113,13 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
         renderTarget.getDepthTexture().bind(shaderProgramViewer, "depthTexture", 1);
 
-        // renderuj stěnu
-        gl.glUniform1i(locMode, 0);
-        buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
-
         // renderuj elipsoid
         gl.glUniform1i(locMode, 1);
         buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
 
         // renderuj zdroj svetla
-        gl.glUniform1i(locMode, 2);
-        buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
+//        gl.glUniform1i(locMode, 2);
+//        buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
     }
 
     private void renderFromLightSource(GL2GL3 gl) {
@@ -153,15 +131,13 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
 //        gl.glUniformMatrix4fv(locView, 1, false, camera.getViewMatrix().floatArray(), 0);
         gl.glUniformMatrix4fv(locView, 1, false, projViewer.floatArray(), 0);
-        // renderuj zdroj svetla
+
         gl.glUniform1i(locMode, 2);
 
         // renderuj zdroj svetla
         buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramLightSource);
 
-
         buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
-
     }
 
     @Override
@@ -180,7 +156,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         GL2GL3 gl = glDrawable.getGL().getGL2GL3();
         gl.glDeleteProgram(shaderProgramViewer);
         gl.glDeleteProgram(shaderProgramLight);
-        gl.glDeleteProgram(shaderProgramLightSource);
+        // gl.glDeleteProgram(shaderProgramLightSource);
     }
 
     @Override

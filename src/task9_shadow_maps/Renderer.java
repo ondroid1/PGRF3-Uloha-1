@@ -1,4 +1,4 @@
-package task8_vertex_vs_pixel_lighting;
+package task9_shadow_maps;
 
 import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -18,12 +18,11 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 	private OGLRenderTarget renderTarget;
 
 	private int shaderProgramViewer, shaderProgramLight, locView, locProjection, locMode, locLightVP, locEyePosition, locLightPosition,
-			locLightView, locLightProj, locModeLight, lightingType;
+			locLightView, locLightProj, locModeLight;
 
 	private Mat4 projViewer, projLight;
 	private Camera camera, lightCamera;
 	private int mx, my;
-
 
 	@Override
 	public void init(GLAutoDrawable glDrawable) {
@@ -65,8 +64,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 		locLightView = gl.glGetUniformLocation(shaderProgramLight, "viewLight");
 		locModeLight = gl.glGetUniformLocation(shaderProgramLight, "mode");
 
-		lightingType = gl.glGetUniformLocation(shaderProgramLight, "lightingType");
-
 		renderTarget = new OGLRenderTarget(gl, 1024, 1024);
 	}
 
@@ -77,7 +74,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 		renderFromLight(gl);
 		renderFromViewer(gl);
 
-		textRenderer.drawStr2D(3, height - 20, this.getClass().getName() + ": Přepnutí typu osvětlení (per pixel a per vertex) libovolnou klávesou");
+		textRenderer.drawStr2D(3, height - 20, this.getClass().getName() + ": NEDOKONČENO");
 		textRenderer.drawStr2D(width - 90, 3, " (c) PGRF UHK");
 	}
 
@@ -91,6 +88,10 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
 		gl.glUniformMatrix4fv(locLightView, 1, false, lightCamera.getViewMatrix().floatArray(), 0);
 		gl.glUniformMatrix4fv(locLightProj, 1, false, projLight.floatArray(), 0);
+
+//		// renderuj stěnu
+//		gl.glUniform1i(locModeLight, 0);
+//		buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramLight);
 
 		// renderuj elipsoid
 		gl.glUniform1i(locModeLight, 1);
@@ -111,6 +112,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 		gl.glUniformMatrix4fv(locLightVP, 1, false, lightCamera.getViewMatrix().mul(projLight).floatArray(), 0);
 		gl.glUniform3fv(locEyePosition, 1, ToFloatArray.convert(camera.getPosition()), 0);
 		gl.glUniform3fv(locLightPosition, 1, ToFloatArray.convert(lightCamera.getPosition()), 0);
+
+		renderTarget.getDepthTexture().bind(shaderProgramViewer, "depthTexture", 1);
 
 		// renderuj elipsoid
 		gl.glUniform1i(locMode, 1);
@@ -171,11 +174,6 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (lightingType == 0) {
-			lightingType = 1;
-		} else {
-			lightingType = 0;
-		}
 	}
 
 	@Override

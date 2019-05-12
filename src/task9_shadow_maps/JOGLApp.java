@@ -1,4 +1,6 @@
-package task8_vertex_vs_pixel_lighting;
+package task9_shadow_maps;
+
+
 
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
@@ -50,7 +52,7 @@ public class JOGLApp {
 	                  }.start();
 				}
 			});
-
+	    	//testFrame.setTitle("");
 	    	testFrame.pack();
 	    	testFrame.setVisible(true);
             animator.start(); // start the animation loop

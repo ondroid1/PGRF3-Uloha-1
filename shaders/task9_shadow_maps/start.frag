@@ -8,7 +8,6 @@ in vec3 light;
 in vec3 viewDirection;
 in vec3 NdotL;
 
-uniform int lightingType;
 uniform sampler2D textureID;
 uniform sampler2D depthTexture;
 
@@ -34,25 +33,14 @@ void main() {
 	float z2 = depthTexCoord.z / depthTexCoord.w;
 
 //	bool shadow = z1 < z2 - 0.0001;
-
+//
 //	if (shadow) {
-//		if (lightingType == 0) { // per vertex
-//			outColor = vec4(1, 0, 0, 1);
-//		} else { // per pixel
-//			outColor = texColor * ambient;
-//		}
+////		outColor = vec4(1, 0, 0, 1);
+//		outColor = texColor * ambient;
 //	} else {
-//		outColor = vec4(0, 1, 0, 1);
-////		outColor = texColor * color;
+////		outColor = vec4(0, 1, 0, 1);
+//		outColor = texColor * color;
 //	}
 
-	if (lightingType == 0) { // per vertex
-		outColor = vec4(1, 0, 0, 1);
-	} else { // per pixel
-		outColor = texColor * ambient;
-	}
-
-	outColor = texColor * color;
-
-	//outColor = texColor * ambient;
+	outColor = texColor * ambient;
 }

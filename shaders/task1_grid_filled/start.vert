@@ -7,16 +7,16 @@ uniform mat4 view;
 
 const float PI = 3.14;
 
-// ohnutí gridu do podoby elipsoidu
-vec3 getSphere(vec2 xy) {
-	float az = xy.x * PI;
-	float ze = xy.y * PI/2; // máme od -1 do 1 a chceme od -PI/2 do PI/2
-	float r = 2;
-
-	float x = cos(az)*cos(ze)*r;
-	float y = 2*sin(az)*cos(ze)*r;
-	float z = 0.5*sin(ze)*r;
-	return vec3(x, y, z);
+// ohnutí gridu do podoby koule
+vec3 getSphere(vec2 paramPos) {
+	float az = paramPos.x * 2 * PI;
+	float ze = paramPos.y * PI;
+	float r = 1;
+	return vec3(
+	r * sin(ze) * cos(az) * 2,
+	r * sin(ze) * sin(az) * 2,
+	r * cos(ze) * 2
+	);
 }
 
 void main() {

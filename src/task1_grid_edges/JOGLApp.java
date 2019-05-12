@@ -27,8 +27,7 @@ public class JOGLApp {
 
 			// The canvas is the widget that's drawn in the JFrame
 			GLCanvas canvas = new GLCanvas(capabilities);
-			Renderer ren = new Renderer("/task1_grid_edges/start.vert",
-					"/task1_grid_edges/start.frag");
+			Renderer ren = new Renderer();
 			canvas.addGLEventListener(ren);
 			canvas.addMouseListener(ren);
 			canvas.addMouseMotionListener(ren);

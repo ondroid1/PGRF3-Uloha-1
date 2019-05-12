@@ -18,15 +18,16 @@ out vec3 NdotL;
 const float PI = 3.14;
 
 // ohnutí gridu do podoby koule
-vec3 getSphere(vec2 xy) {
-    float az = xy.x * PI;
-    float ze = xy.y * PI/2; // máme od -1 do 1 a chceme od -PI/2 do PI/2
+vec3 getSphere(vec2 paramPos) {
+    float az = paramPos.x * 2 * PI;
+    float ze = paramPos.y * PI;
     float r = 1;
 
-    float x = cos(az)*cos(ze)*r;
-    float y = 2*sin(az)*cos(ze)*r;
-    float z = 0.5*sin(ze)*r;
-    return vec3(x, y, z);
+    return vec3(
+        r * sin(ze) * cos(az) * 2,
+        r * sin(ze) * sin(az) * 2,
+        r * cos(ze) * 2
+    );
 }
 
 vec3 getSphereNormal(vec2 xy) {
@@ -35,28 +36,14 @@ vec3 getSphereNormal(vec2 xy) {
     return cross(u, v);
 }
 
-vec3 getWall(vec2 xy) {
-    return vec3(xy, 1.0); // posuneme po ose "z" o 1
-}
-
-vec3 getWallNormal(vec2 xy) {
-    vec3 u = getWall(xy + vec2(0.001, 0)) - getWall(xy - vec2(0.001, 0));
-    vec3 v = getWall(xy + vec2(0, 0.001)) - getWall(xy - vec2(0, 0.001));
-    return cross(u, v);
-}
-
 void main() {
     vec2 pos = inPosition * 2 - 1;
     vec3 finalPos;
-    if (mode == 0) { // mode 0 je stínící plocha
-        finalPos = getWall(pos);
-        normal = getWallNormal(pos);
-    } else { // mode 1 je koule
-        finalPos = getSphere(pos);
-        normal = getSphereNormal(pos);
-    }
-	gl_Position = projection * view * vec4(finalPos, 1.0);
 
+    finalPos = getSphere(pos);
+    gl_Position = projection * view * vec4(finalPos, 1.0);
+
+    normal = getSphereNormal(pos);
     light = lightPosition - finalPos;
     NdotL = vec3(dot(normal, light));
 
@@ -66,8 +53,6 @@ void main() {
     vec3 eyePosition = vec3(invView[3][0], invView[3][1], invView[3][2]);
 
     viewDirection = eyePosition - finalPos;
-
-    texCoord = inPosition;
 
     depthTexCoord = lightVP * vec4(finalPos, 1.0);
     depthTexCoord.xyz = (depthTexCoord.xyz + 1) / 2; // obrazovka má rozsahy <-1;1>

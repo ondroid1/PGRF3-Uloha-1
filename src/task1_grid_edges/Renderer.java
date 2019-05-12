@@ -31,7 +31,8 @@ import java.awt.event.*;
 public class Renderer implements GLEventListener, MouseListener,
 		MouseMotionListener, KeyListener {
 
-	private String vertexShaderFileName, fragmentShaderFileName;
+	private String vertexShaderFileName = "/task1_grid_edges/start.vert",
+			fragmentShaderFileName  = "/task1_grid_edges/start.frag";
 
 	int width, height;
 
@@ -42,11 +43,6 @@ public class Renderer implements GLEventListener, MouseListener,
 
 	private Mat4 proj;
 	private Camera camera;
-
-	public Renderer(String vertexShaderFileName, String fragmentShaderFileName) {
-		this.vertexShaderFileName = vertexShaderFileName;
-		this.fragmentShaderFileName = fragmentShaderFileName;
-	}
 
 	@Override
 	public void init(GLAutoDrawable glDrawable) {
@@ -62,7 +58,7 @@ public class Renderer implements GLEventListener, MouseListener,
 		buffers = GridFactory.generateGrid(gl, 20, 20);
 
 		camera = new Camera()
-				.withPosition(new Vec3D(5,5, 5))
+				.withPosition(new Vec3D(10,10, 10))
 				.addAzimuth(5 / 4. * Math.PI)
 				.addZenith(-1 / 5. * Math.PI)
 				.withFirstPerson(false)

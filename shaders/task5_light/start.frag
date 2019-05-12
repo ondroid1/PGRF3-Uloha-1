@@ -32,13 +32,5 @@ void main() {
 	// aktuální "z" podle podle z pozice světla
 	float z2 = depthTexCoord.z / depthTexCoord.w;
 
-	bool shadow = z1 < z2 - 0.0001;
-
-	if (shadow) {
-//		outColor = vec4(1, 0, 0, 1);
-		outColor = texColor * ambient;
-	} else {
-//		outColor = vec4(0, 1, 0, 1);
-		outColor = texColor * color;
-	}
+	outColor = texColor * color;
 }

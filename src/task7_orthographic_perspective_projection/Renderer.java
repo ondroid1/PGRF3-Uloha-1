@@ -87,7 +87,7 @@ public class Renderer implements GLEventListener, MouseListener,
         // bind and draw
         buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgram);
 
-        String text = this.getClass().getName();
+        String text = this.getClass().getName() + ": Změna typu projekce (perspektivní a ortogonální) přes libovolnou klávesu";
         textRenderer.drawStr2D(3, height - 20, text);
         textRenderer.drawStr2D(width - 90, 3, " (c) PGRF UHK");
     }

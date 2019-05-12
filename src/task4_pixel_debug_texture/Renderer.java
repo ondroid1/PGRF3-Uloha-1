@@ -107,6 +107,19 @@ public class Renderer implements GLEventListener, MouseListener,
 				0, 0, 1,	0, -1, 0,	0, 1
 		};
 
+//		float[] pyramid = {  // Vertices for the front face
+//				-1.0f,  0.0f, 0.86f,
+//				1.0f,  0.0f, 0.86f,
+//				0.0f,  1.86f, 0.0f,
+//		};
+//
+//		int[] indexBufferData = new int[12];
+//		for (int i = 0; i<3; i++){
+//			indexBufferData[i*3] = i*3;
+//			indexBufferData[i*3 + 1] = i*3 + 1;
+//			indexBufferData[i*3 + 2] = i*3 + 2;
+//		}
+
 		int[] indexBufferData = new int[36];
 		for (int i = 0; i<6; i++){
 			indexBufferData[i*6] = i*4;

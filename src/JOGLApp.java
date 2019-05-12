@@ -3,6 +3,9 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
+import common.BasicRenderer;
+import common.Demo;
+import common.RendererType;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,18 +18,15 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
+
+
 import java.util.List;
-
-
-
-import java.util.HashMap;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import javax.swing.SwingUtilities;
 
@@ -36,20 +36,45 @@ public class JOGLApp {
 	private Frame applicationFrame;
 	private int demoId = 1;
 	static int[] countMenuItems = {15,20};
-
 	private KeyAdapter keyAdapter;
+	private static Demo[] demos = new Demo[] {
+		// 1. bod
+		new Demo ("Bod 1 - Pouze hrany", "task1_grid_edges", RendererType.OWN, null, null),
+		new Demo ("Bod 1 - Povrch vyplněný barvou", "task1_grid_filled", RendererType.BASIC, "/task1_grid_filled/start.vert",
+				"/task1_grid_filled/start.frag"),
+		// 2. bod
+		new Demo ("Bod 2 - První těleso - kartézské souřadnice", "task2_shape1_cartesian", RendererType.BASIC, "/task2_shape1_cartesian/start.vert",
+				"/task2_shape1_cartesian/start.frag"),
+		new Demo ("Bod 2 - Druhé těleso - kartézské souřadnice", "task2_shape2_cartesian", RendererType.BASIC, "/task2_shape2_cartesian/start.vert",
+				"/task2_shape2_cartesian/start.frag"),
+		new Demo ("Bod 2 - První těleso - sférické souřadnice", "task2_shape3_sphere", RendererType.BASIC, "/task2_shape3_sphere/start.vert",
+				"/task2_shape3_sphere/start.frag"),
+		new Demo ("Bod 2 - Druhé těleso - sférické souřadnice", "task2_shape4_sphere", RendererType.BASIC, "/task2_shape4_sphere/start.vert",
+				"/task2_shape4_sphere/start.frag"),
+		new Demo ("Bod 2 - První těleso - cylindrické souřadnice", "task2_shape5_cylindrical", RendererType.BASIC, "/task2_shape5_cylindrical/start.vert",
+				"/task2_shape5_cylindrical/start.frag"),
+		new Demo ("Bod 2 - Druhé těleso - cylindrické souřadnice", "task2_shape6_cylindrical", RendererType.BASIC, "/task2_shape6_cylindrical/start.vert",
+				"/task2_shape6_cylindrical/start.frag"),
+		// 3. bod
+		new Demo ("Bod 3 - Modifikace funkce v čase", "task3_uniform_time", RendererType.BASIC, "/task3_uniform_time/start.vert",
+				"/task3_uniform_time/start.frag"),
+		// 4. bod
+		new Demo ("Bod 4 - Pixelové zobrazení povrchu - XYZ", "task4_pixel_debug_xyz", RendererType.BASIC, "/task4_pixel_debug_xyz/start.vert",
+				"/task4_pixel_debug_xyz/start.frag"),
+		new Demo ("Bod 4 - Pixelové zobrazení povrchu - normála", "task4_pixel_debug_normal", RendererType.BASIC, "/task4_pixel_debug_normal/start.vert",
+				"/task4_pixel_debug_xyz/start.frag"),
+		new Demo ("Bod 4 - Pixelové zobrazení povrchu - textura", "task4_pixel_debug_texture", RendererType.BASIC, "/task4_pixel_debug_texture/start.vert",
+				"/task4_pixel_debug_xyz/start.frag"),
+	};
 
 	public void start() {
 		try {
 			applicationFrame = new Frame("PGRF3 - Úloha 1 - Ondřej Stieber");
 			applicationFrame.setSize(512, 384);
 			
-			System.out.println("searching all samples");
+			makeGUI(applicationFrame, getDemoNames());
 
-			String[] names = getDemoNames("", "\\Renderer.class"); // comment this to have only the samples listed in names
-			makeGUI(applicationFrame, names);
-
-			setApp(applicationFrame, names[0]);
+			setApp(applicationFrame, demos[0]);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -57,75 +82,19 @@ public class JOGLApp {
 
 	}
 
-	String[] getDemoNames(String beginingPath, String nameApp) {
-		Object[] paths;
-		try {
-			paths = Files.find(
-					Paths.get(""),
-					Integer.MAX_VALUE,
-					(filePath, fileAttr) -> (filePath.toString()
-							.lastIndexOf(nameApp)) > 0).toArray();
-			List<String> pathList = new ArrayList<>();
-			for (int i = 0; i < paths.length; i++) {
-				Path path = (Path) paths[i];
-				String s = path.toString();
-				
-				int indexS =  s.indexOf(beginingPath);
-				if (indexS < 0) continue;
-				int indexE =  s.lastIndexOf("\\");
-				if (indexE < 1) continue;
-				
-				s = s.substring(indexS, indexE).trim().replace("\\", ".");
-				pathList.add(s);
-			}
-			Collections.sort(pathList);
+	String[] getDemoNames() {
 
-			//to find groups of samples
-			HashMap<String, Integer> mapGroups = new HashMap<>();
-			for (int i = 0; i < pathList.size(); i++) {
-				String s = pathList.get(i);
-				System.out.println(s);
-				int index =  s.indexOf(".");
-				if (index < 1) continue;
-				String group = s.substring(0,index).trim();
-				if (mapGroups.containsKey(group))
-					mapGroups.put(group, mapGroups.get(group) + 1);
-				else
-					mapGroups.put(group, 1);
-			}
-
-			String[] names = new String[pathList.size()];
-			int iName = 0;
-			for (Object name : pathList.toArray())
-				names[iName++] = (String) name;
-			
-			countMenuItems = new int[mapGroups.size()];
-
-			SortedSet<String> keys = new TreeSet<String>(mapGroups.keySet());
-			int iKey = 0;
-			for (String key : keys) {
-				countMenuItems[iKey] = mapGroups.get(key);
-				// System.out.println(nameMenuItem[iKey]+countMenuItems[iKey]);
-				iKey++;
-			}
-
-			return names;
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
+		return Stream.of(demos).map(a -> a.getDemoName()).toArray(String[]::new);
 	}
 	
-	private void makeGUI(Frame testFrame, String[] rendererClassNames) {
+	private void makeGUI(Frame testFrame, String[] demoNames) {
 		ActionListener actionListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-				demoId = Integer
-						.valueOf(ae.getActionCommand().substring(0, ae.getActionCommand().lastIndexOf('-') - 1).trim());
-				setApp(testFrame, rendererClassNames[demoId - 1]);
+//				demoId = Integer
+//						.valueOf(ae.getActionCommand().substring(0, ae.getActionCommand().indexOf('-') - 1).trim());
+				demoId = Arrays.asList(demoNames).indexOf(ae.getActionCommand().substring(ae.getActionCommand().indexOf('-') + 2));
+				setApp(testFrame, demos[demoId]);
 			}
 		};
 
@@ -134,9 +103,9 @@ public class JOGLApp {
 		for(int itemMenu = 0 ; itemMenu < 1; itemMenu++){
 			Menu menu1 = new Menu("Ukázka");
 			MenuItem m;
-			for (int i = 0; i < rendererClassNames.length && i < countMenuItems[itemMenu]; i++) {
+			for (int i = 0; i < demoNames.length && i < countMenuItems[itemMenu]; i++) {
 				m = new MenuItem(new Integer(menuIndex + 1).toString() + " - "
-						+ rendererClassNames[menuIndex]);
+						+ demoNames[menuIndex]);
 				m.addActionListener(actionListener);
 				menu1.add(m);
 				menuIndex++;
@@ -150,22 +119,22 @@ public class JOGLApp {
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_HOME:
 					demoId = 1;
-					setApp(testFrame, rendererClassNames[demoId - 1]);
+					setApp(testFrame, demos[demoId - 1]);
 
 					break;
 				case KeyEvent.VK_END:
-					demoId = rendererClassNames.length;
-					setApp(testFrame, rendererClassNames[demoId - 1]);
+					demoId = demoNames.length;
+					setApp(testFrame, demos[demoId - 1]);
 					break;
 				case KeyEvent.VK_LEFT:
 					if (demoId > 1)
 						demoId--;
-					setApp(testFrame, rendererClassNames[demoId - 1]);
+					setApp(testFrame, demos[demoId - 1]);
 					break;
 				case KeyEvent.VK_RIGHT:
-					if (demoId < rendererClassNames.length)
+					if (demoId < demoNames.length)
 						demoId++;
-					setApp(testFrame, rendererClassNames[demoId - 1]);
+					setApp(testFrame, demos[demoId - 1]);
 					break;
 				}
 			}
@@ -175,7 +144,7 @@ public class JOGLApp {
 		testFrame.setMenuBar(menuBar);
 	}
 
-	private void setApp(Frame testFrame, String name) {
+	private void setApp(Frame testFrame, Demo demo) {
 		Dimension dim;
 		if (canvas != null){
 			testFrame.remove(canvas);
@@ -200,8 +169,13 @@ public class JOGLApp {
 		Object rendererInstance = null;
 		Class<?> rendererClass;
 		try {
-			rendererClass = Class.forName(name + ".Renderer");
-			rendererInstance = rendererClass.newInstance();
+			if (demo.getRendererType() == RendererType.BASIC) {
+				rendererInstance = new BasicRenderer(demo.getVertexShaderFileName(), demo.getFragmentShaderFileName());
+			} else {
+				rendererClass = Class.forName(demo.getDemoPath() + ".Renderer");
+				rendererInstance = rendererClass.newInstance();
+			}
+
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
 			e1.printStackTrace();
 		}
@@ -228,12 +202,16 @@ public class JOGLApp {
 			}
 		});
 		
-		testFrame.setTitle(rendererInstance.getClass().getName());
+//		testFrame.setTitle(rendererInstance.getClass().getName());
 
 		testFrame.pack();
 		testFrame.setVisible(true);
 		animator.start(); // start the animation loop
-}
+	}
+
+	private void setDemos () {
+
+	}
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> new JOGLApp().start());

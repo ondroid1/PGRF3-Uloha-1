@@ -18,7 +18,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
     private OGLRenderTarget renderTarget;
 
     private int shaderProgramViewer, shaderProgramLight, shaderProgramLightSource, locView, locProjection, locMode, locLightVP, locEyePosition, locLightPosition,
-        locLightView, locLightProj, locModeLight;
+        locLightView, locLightProj, locModeLight, locLightSourceView;
 
     private Mat4 projViewer, projLight;
     private Camera camera, lightCamera;
@@ -38,7 +38,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
         shaderProgramLight = ShaderUtils.loadProgram(gl, "/task5_light/light");
         shaderProgramViewer = ShaderUtils.loadProgram(gl, "/task5_light/start");
-        //shaderProgramLightSource = ShaderUtils.loadProgram(gl, "/task5_light/light_position");
+        shaderProgramLightSource = ShaderUtils.loadProgram(gl, "/task5_light/light_position");
 
         buffers = GridFactory.generateGrid(gl, 100, 100);
 
@@ -64,6 +64,8 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         locLightProj = gl.glGetUniformLocation(shaderProgramLight, "projLight");
         locLightView = gl.glGetUniformLocation(shaderProgramLight, "viewLight");
         locModeLight = gl.glGetUniformLocation(shaderProgramLight, "mode");
+
+        // locLightSourceView = gl.glGetUniformLocation(shaderProgramLight, "viewLightSource");
 
         renderTarget = new OGLRenderTarget(gl, 1024, 1024);
     }
@@ -117,27 +119,24 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         gl.glUniform1i(locMode, 1);
         buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
 
-        // renderuj zdroj svetla
-        gl.glUniform1i(locMode, 1);
-        buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
+//        // renderuj zdroj svetla
+//        gl.glUniform1i(locMode, 1);
+//        buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
     }
 
     private void renderFromLightSource(GL2GL3 gl) {
 
         gl.glUseProgram(shaderProgramLightSource);
 
-        gl.glClearColor(0.0f, 0.3f, 0.0f, 1.0f);
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         gl.glClear(GL2GL3.GL_COLOR_BUFFER_BIT | GL2GL3.GL_DEPTH_BUFFER_BIT);
 
-//        gl.glUniformMatrix4fv(locView, 1, false, camera.getViewMatrix().floatArray(), 0);
-        gl.glUniformMatrix4fv(locView, 1, false, projViewer.floatArray(), 0);
+        gl.glUniformMatrix4fv(locLightView, 1, false, lightCamera.getViewMatrix().floatArray(), 0);
 
         gl.glUniform1i(locMode, 1);
 
         // renderuj zdroj svetla
         buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramLightSource);
-
-        buffers.draw(GL2GL3.GL_TRIANGLES, shaderProgramViewer);
     }
 
     @Override
@@ -156,7 +155,7 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
         GL2GL3 gl = glDrawable.getGL().getGL2GL3();
         gl.glDeleteProgram(shaderProgramViewer);
         gl.glDeleteProgram(shaderProgramLight);
-        // gl.glDeleteProgram(shaderProgramLightSource);
+        //gl.glDeleteProgram(shaderProgramLightSource);
     }
 
     @Override

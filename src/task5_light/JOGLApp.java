@@ -4,6 +4,7 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
+import common.Constants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +17,7 @@ public class JOGLApp {
 	public void start() {
 		try {
 
-			Frame testFrame = new Frame("TestFrame");
+			Frame testFrame = new Frame(Constants.FRAME_TITLE);
 			testFrame.setSize(512, 384);
 
 			// setup OpenGL version

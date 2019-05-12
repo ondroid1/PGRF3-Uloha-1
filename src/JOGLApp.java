@@ -56,15 +56,23 @@ public class JOGLApp {
 		new Demo ("Bod 2 - Druhé těleso - cylindrické souřadnice", "task2_shape6_cylindrical", RendererType.BASIC, "/task2_shape6_cylindrical/start.vert",
 				"/task2_shape6_cylindrical/start.frag"),
 		// 3. bod
-		new Demo ("Bod 3 - Modifikace funkce v čase", "task3_uniform_time", RendererType.BASIC, "/task3_uniform_time/start.vert",
-				"/task3_uniform_time/start.frag"),
+		new Demo ("Bod 3 - Modifikace funkce v čase", "task3_uniform_time", RendererType.OWN, null, null),
 		// 4. bod
 		new Demo ("Bod 4 - Pixelové zobrazení povrchu - XYZ", "task4_pixel_debug_xyz", RendererType.BASIC, "/task4_pixel_debug_xyz/start.vert",
 				"/task4_pixel_debug_xyz/start.frag"),
 		new Demo ("Bod 4 - Pixelové zobrazení povrchu - normála", "task4_pixel_debug_normal", RendererType.BASIC, "/task4_pixel_debug_normal/start.vert",
 				"/task4_pixel_debug_xyz/start.frag"),
-		new Demo ("Bod 4 - Pixelové zobrazení povrchu - textura", "task4_pixel_debug_texture", RendererType.BASIC, "/task4_pixel_debug_texture/start.vert",
-				"/task4_pixel_debug_xyz/start.frag"),
+		new Demo ("Bod 4 - Pixelové zobrazení povrchu - textura", "task4_pixel_debug_texture", RendererType.OWN, null, null),
+		// 5. bod
+		new Demo ("Bod 5 - Osvětlení", "task5_light", RendererType.OWN, null, null),
+		// 6. bod
+		new Demo ("Bod 6 - Ovládání kamery myší a WASD", "task6_camera_mouse_wasd", RendererType.OWN, null, null),
+		// 7. bod
+		new Demo ("Bod 7 - Perspektivní a ortogonální projekce", "task7_orthographic_perspective_projection", RendererType.OWN, null, null),
+		// 8. bod
+		new Demo ("Bod 8 - Osvětlení per pixel vs per vertex", "task8_vertex_vs_pixel_lighting", RendererType.OWN, null, null),
+		// 8. bod
+		// new Demo ("Bod 5 - Shadow maps", "task9_shadow_maps", RendererType.OWN, null, null),
 	};
 
 	public void start() {
@@ -91,8 +99,6 @@ public class JOGLApp {
 		ActionListener actionListener = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-//				demoId = Integer
-//						.valueOf(ae.getActionCommand().substring(0, ae.getActionCommand().indexOf('-') - 1).trim());
 				demoId = Arrays.asList(demoNames).indexOf(ae.getActionCommand().substring(ae.getActionCommand().indexOf('-') + 2));
 				setApp(testFrame, demos[demoId]);
 			}
@@ -100,18 +106,18 @@ public class JOGLApp {
 
 		MenuBar menuBar = new MenuBar();
 		int menuIndex = 0;
-		for(int itemMenu = 0 ; itemMenu < 1; itemMenu++){
-			Menu menu1 = new Menu("Ukázka");
-			MenuItem m;
-			for (int i = 0; i < demoNames.length && i < countMenuItems[itemMenu]; i++) {
-				m = new MenuItem(new Integer(menuIndex + 1).toString() + " - "
-						+ demoNames[menuIndex]);
-				m.addActionListener(actionListener);
-				menu1.add(m);
-				menuIndex++;
-			}
-			menuBar.add(menu1);
+
+		Menu menu1 = new Menu("Ukázka");
+		MenuItem m;
+		for (int i = 0; i <= demoNames.length; i++) {
+			m = new MenuItem(new Integer(menuIndex + 1).toString() + " - "
+					+ demoNames[menuIndex]);
+			m.addActionListener(actionListener);
+			menu1.add(m);
+			menuIndex++;
 		}
+		menuBar.add(menu1);
+
 		
 		keyAdapter = new KeyAdapter() {
 			@Override

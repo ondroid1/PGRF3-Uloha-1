@@ -1,6 +1,7 @@
 #version 150
 in vec2 inPosition; // input from the vertex buffer
 out vec3 normal;
+out vec3 vertColor;
 
 uniform mat4 proj;
 uniform mat4 view;
@@ -31,6 +32,8 @@ void main() {
 
 	finalPos = getConus(pos);
 	normal = getNormal(pos);
+
+	vertColor = normal;
 
 	gl_Position = proj * view * vec4(finalPos, 1.0);
 }

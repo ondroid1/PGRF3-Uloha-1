@@ -44,11 +44,11 @@ public class Renderer implements GLEventListener, MouseListener, MouseMotionList
 
         lightCamera = new Camera()
                 .withPosition(new Vec3D(5, 5, 5))
-                .addAzimuth(5 / 4. * Math.PI)//-3/4.
+                .addAzimuth(5 / 4. * Math.PI -3/4)
                 .addZenith(-1 / 5. * Math.PI);
 
         camera = new Camera()
-                .withPosition(new Vec3D(0, 0, 0))
+                .withPosition(new Vec3D(5, 5, 5))
                 .addAzimuth(5 / 4. * Math.PI)//-3/4.
                 .addZenith(-1 / 5. * Math.PI)
                 .withFirstPerson(false)
